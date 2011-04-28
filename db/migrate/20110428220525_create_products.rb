@@ -6,12 +6,10 @@ class CreateProducts < ActiveRecord::Migration
       t.integer :price
 
       t.timestamps
-      create_citier_view(Product)
     end
   end
 
   def self.down
-    drop_citier_view(Product)
     drop_table :products
   end
 end
