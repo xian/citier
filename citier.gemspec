@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.authors = ["Peter Hamilton, Originally from Laurent Buffat, Pierre-Emmanuel Jouve"]
   s.date = %q{2011-04-29}
   s.description = %q{CITIER (Class Inheritance & Table Inheritance Embeddings for Rails) is a solution for single and multiple class table inheritance.
-    For full information: http://peterejhamilton.github.com/citier/
+    For full information: http://peterhamilton.github.com/citier/
     For the original version by ALTRABio see www.github.com/altrabio/}
   s.email = %q{peter@inspiredpixel.net}
   s.extra_rdoc_files = ["lib/citier.rb",
@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
     "lib/citier/sql_adapters.rb",
     "Manifest",
     "citier.gemspec"]
-  s.homepage = %q{https://github.com/peterejhamilton/citier/}
+  s.homepage = %q{https://github.com/peterhamilton/citier/}
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "citier", "--main", "README"]
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{citier}
