@@ -38,7 +38,7 @@ class Dictionary < Book
   end
 end
 ```
-There are two lines you need to add to your migration files as well, see [Here](http://peterejhamilton.github.com/citier/) for full information
+There are two lines you need to add to your migration files as well, see [Here](http://peterhamilton.github.com/citier/) for full information
 
 ```bash
 $ rails console
@@ -93,4 +93,4 @@ Cool huh?
 It is based on original code by ALTRABio (www.github.com/altrabio/)
 
 **For full information please go to the github page:**
-**http://peterejhamilton.github.com/citier/**
+**http://peterhamilton.github.com/citier/**
