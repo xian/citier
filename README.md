@@ -5,8 +5,6 @@ What is it?
 -----------
 CITIER (Class Inheritance & Table Inheritance Embeddings for Rails) is a very simple way of implementing Multiple Table inheritance in Rails.
 
-Built upon/fixed/cleaned and evolved into to CITIER for my own (And potentially other's) needs.
-
 In short it allows you (finally) to do this:
 
 ```ruby
