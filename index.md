@@ -10,6 +10,8 @@ Introduction to CITIER
 > NOTE: This was a project originally started by ALTRABio. I have done substantial fixes, improvements and code refactoring to get it running smoothly and modified and changed the code a lot whilst developing my own projects, but the initial work and planning (including a fair amount of this documentation) was done by them.
 > To quote the often heard phrase in academia: "We stand on the shoulders of giants".
 
+> UPDATE 2nd May 2011: I realise a lot of this documentation needs cleaning up, better explanation and more. I fully intend to do this, I just need to pass my exams first, so there might be a lull in development for a few weeks. Bear with me!
+
 **Ruby Class Inheritance & Multiple Table Inheritance Embeddings : A full featured solution based on Ruby Class Inheritance & Views**
 
 When trying to model a real world problem that needs some information storage into databases, programmers often face the issue which consists in mapping objects to relational databases. After a long review of Rails' existing solutions, I along with the original authors propose a new solution which has been bundled into a gem called : **CITIER** **C**lass **I**nheritance & **T**able **I**nheritance **E**mbeddings for **R**ails
