@@ -41,9 +41,11 @@ module ChildInstanceMethods
     end
 
     # Update root class with this 'type'
-    sql = "UPDATE #{self.class.root_class.table_name} SET #{self.class.inheritance_column} = '#{self.class.to_s}' WHERE id = #{self.id}"
-    citier_debug("SQL : #{sql}")
-    self.connection.execute(sql)
+    if parent_saved && current_saved
+      sql = "UPDATE #{self.class.root_class.table_name} SET #{self.class.inheritance_column} = '#{self.class.to_s}' WHERE id = #{self.id}"
+      citier_debug("SQL : #{sql}")
+      self.connection.execute(sql)
+    end
     return parent_saved && current_saved
   end
 
