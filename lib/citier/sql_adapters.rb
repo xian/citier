@@ -5,12 +5,12 @@
 #                                                                                                #
 #------------------------------------------------------------------------------------------------#
 
-# SQLite
-
 require 'active_record'
 require 'active_record/connection_adapters/sqlite_adapter'
 require 'active_record/connection_adapters/sqlite3_adapter'
 require 'active_record/connection_adapters/postgresql_adapter'
+
+# SQLite
 module ActiveRecord
   module ConnectionAdapters
     class SQLiteAdapter < AbstractAdapter
@@ -41,12 +41,10 @@ module ActiveRecord
     class PostgreSQLAdapter < AbstractAdapter
       def tables(name = nil)
         a=tablesL(name)
-        puts("1------>#{a}")        
         b=viewsL(name)
         if(b!=[])
           a=a+b
         end
-        puts("2------>#{a}")
         return a
       end
 
@@ -70,8 +68,6 @@ module ActiveRecord
       def table_exists?(name)
         a=table_existsB?(name)
         b=views_existsB?(name)
-        puts"T---->#{a}"
-        puts"T---->#{b}"
         return a||b
       end
 
@@ -124,8 +120,6 @@ module ActiveRecord
   end
 end
 
-
-
 # MySQL
 # No Modification needed, this essentially comes from the fact that MySQL "show" command
-# lists simultaneously tables & views
+# lists tables & views simultaneously
