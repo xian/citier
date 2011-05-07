@@ -202,4 +202,4 @@ Final Notes
 -----------
 Whenever you modify a table (adding removing columns) please consider (if necessary) to update the (eventually) corresponding view. This can be done by successively Dropping and re-Creating the view (thanks to the drop_citier_view and create_citier_view methods)
 
-We encourage you to try, test, use, enhance and document this gem. If you do, please give us some feed back at: citierforrails[at]gmail.com
+We encourage you to try, test, use, enhance and document this gem. If you do, please give me some feed back at: peter@inspiredpixel.net
