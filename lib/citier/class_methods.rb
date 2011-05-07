@@ -1,7 +1,5 @@
 module ClassMethods
   # any method placed here will apply to classes
-
-
   def acts_as_citier(options = {})
 
     # Option for setting the inheritance columns, default value = 'type'
@@ -30,7 +28,7 @@ module ClassMethods
       # Add the functions required for children only
       send :include, ChildInstanceMethods
     else
-      # Root class
+    # Root class
 
       after_save :updatetype
 
@@ -39,17 +37,16 @@ module ClassMethods
       set_table_name "#{table_name}"
 
       citier_debug("table_name -> #{self.table_name}")
-
-      #returns the root class (the highest inherited class before ActiveRecord) 
+      #returns the root class (the highest inherited class before ActiveRecord)
       def self.root_class
-        if(self.superclass!=ActiveRecord::Base)  
-          self.superclass.root_class
+        if(self.superclass!=ActiveRecord::Base)
+        self.superclass.root_class
         else
-          return self 
+        return self
         end
       end
 
-      def self.find(*args) #overrides find to get all attributes  
+      def self.find(*args) #overrides find to get all attributes
         tuples = super
 
         # in case of many objects, return an array of them, reloaded to pull in inherited attributes
