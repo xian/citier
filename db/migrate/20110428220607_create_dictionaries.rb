@@ -1,7 +1,6 @@
 class CreateDictionaries < ActiveRecord::Migration
   def self.up
-    create_table :dictionaries, :id => false do |t|
-      t.integer :id, :options => 'PRIMARY KEY'
+    create_table :dictionaries do |t|
       t.string :language
     end
     create_citier_view(Dictionary)

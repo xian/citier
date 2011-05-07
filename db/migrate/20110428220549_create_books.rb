@@ -5,8 +5,7 @@ class CreateBooks < ActiveRecord::Migration
     # the book id could go up by 1, but the product id has since gone
     # by 3 due to other children of 'product' class. Therefore Id's
     # won't match. 'id' still set as primary key, but not auto inc'd
-    create_table :books, :id => false do |t|
-      t.integer :id, :options => 'PRIMARY KEY'
+    create_table :books do |t|
       t.string :title
       t.string :author
     end
