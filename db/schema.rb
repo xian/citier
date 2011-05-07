@@ -12,13 +12,15 @@
 
 ActiveRecord::Schema.define(:version => 20110428220607) do
 
-  create_table "books", :force => true do |t|
-    t.string "title"
-    t.string "author"
+  create_table "books", :id => false, :force => true do |t|
+    t.integer "id"
+    t.string  "title"
+    t.string  "author"
   end
 
-  create_table "dictionaries", :force => true do |t|
-    t.string "language"
+  create_table "dictionaries", :id => false, :force => true do |t|
+    t.integer "id"
+    t.string  "language"
   end
 
   create_table "products", :force => true do |t|
@@ -30,7 +32,7 @@ ActiveRecord::Schema.define(:version => 20110428220607) do
   end
 
   create_table "view_books", :id => false, :force => true do |t|
-    t.integer  "id"
+    t.integer  "id",         :default => 0, :null => false
     t.string   "type"
     t.string   "name"
     t.integer  "price"
@@ -41,7 +43,7 @@ ActiveRecord::Schema.define(:version => 20110428220607) do
   end
 
   create_table "view_dictionaries", :id => false, :force => true do |t|
-    t.integer  "id"
+    t.integer  "id",         :default => 0, :null => false
     t.string   "type"
     t.string   "name"
     t.integer  "price"
