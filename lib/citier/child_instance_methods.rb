@@ -1,9 +1,10 @@
 module ChildInstanceMethods
-
   def save
 
     #get the attributes of the class which are inherited from it's parent.
-    attributes_for_parent = self.attributes.reject{|key,value| !self.class.superclass.column_names.include?(key) }
+      attributes_for_parent = self.attributes.reject{|key,value| !self.class.superclass.column_names.include?(key) }
+      
+    parent_class = self.class.superclass
 
     # Get the attributes of the class which are unique to this class and not inherited.
     attributes_for_current = self.attributes.reject{|key,value| self.class.superclass.column_names.include?(key) }
@@ -12,12 +13,12 @@ module ChildInstanceMethods
 
     #create a new instance of the superclass, passing the inherited attributes.
     parent = self.class.superclass.new(attributes_for_parent)
-    parent.id = self.id
+    parent.id = if !self.class.inherits_id then self.(self.class.parent_id_field) else self.id end
 
     parent.is_new_record(new_record?)
 
     parent_saved = parent.save
-    self.id = parent.id
+    self.id = if self.class.inherits_id then parent.id else None end
 
     if(parent_saved==false)
       # Couldn't save parent class
@@ -25,14 +26,14 @@ module ChildInstanceMethods
       citier_debug("Class (#{self.class.superclass.to_s}) could not be saved")
     end
 
-    # If there are attributes for the current class (unique & not inherited) 
+    # If there are attributes for the current class (unique & not inherited)
     # and parent(s) saved successfully, save current model
     if(!attributes_for_current.empty? && parent_saved)
       current = self.class::Writable.new(attributes_for_current)
       current.id = self.id
       current.is_new_record(new_record?)
       current_saved = current.save
-      
+
       # This is no longer a new record
       is_new_record(false)
 
@@ -45,11 +46,11 @@ module ChildInstanceMethods
     if parent_saved && current_saved
       sql = "UPDATE #{self.class.root_class.table_name} SET #{self.class.inheritance_column} = '#{self.class.to_s}' WHERE id = #{self.id}"
       citier_debug("SQL : #{sql}")
-      self.connection.execute(sql)
+    # self.connection.execute(sql)
     end
     return parent_saved && current_saved
   end
-  
+
   def save!
     raise ActiveRecord::RecordInvalid.new(self) unless self.valid?
     self.save

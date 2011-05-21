@@ -7,6 +7,12 @@ module ClassMethods
 
     #:table_name = option for setting the name of the current class table_name, default value = 'tableized(current class name)'
     table_name = (options[:table_name] || self.name.tableize.gsub(/\//,'_')).to_s
+    
+    # If inherits ID, then will be given same ID as parent. Otherwise autoinc takes over and they are 
+    # linked via the relevant parentmodelID fields
+    inherits_id = options[:inherits_id] || true
+    
+    parent_id_field = (options[:parent_id_field] || "#{self.superclass.to_s.downcase}_id").to_s
 
     set_inheritance_column "#{db_type_field}"
 
