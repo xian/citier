@@ -49,6 +49,11 @@ module ChildInstanceMethods
     end
     return parent_saved && current_saved
   end
+  
+  def save!
+    raise ActiveRecord::RecordInvalid.new(self) unless self.valid?
+    self.save
+  end
 
   include InstanceMethods
 end
