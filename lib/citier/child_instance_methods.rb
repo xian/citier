@@ -1,6 +1,7 @@
 module ChildInstanceMethods
 
   def save
+    return false unless self.valid?
 
     #get the attributes of the class which are inherited from it's parent.
     attributes_for_parent = self.attributes.reject{|key,value| !self.class.superclass.column_names.include?(key) }
@@ -48,7 +49,7 @@ module ChildInstanceMethods
       self.connection.execute(sql)
     end
     
-    return self.valid? && parent_saved && current_saved
+    return parent_saved && current_saved
   end
   
   def save!
