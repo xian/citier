@@ -47,8 +47,8 @@ module ChildInstanceMethods
       citier_debug("SQL : #{sql}")
       self.connection.execute(sql)
     end
-    puts "#{self.class.to_s} #{self.valid?.to_s}"
-    return parent_saved && current_saved && self.valid?
+    
+    return self.valid? && parent_saved && current_saved
   end
   
   def save!
