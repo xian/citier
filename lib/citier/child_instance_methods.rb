@@ -1,6 +1,6 @@
 module ChildInstanceMethods
 
-  def save
+  def save(validate = true)
     return false unless self.valid?
 
     #get the attributes of the class which are inherited from it's parent.
