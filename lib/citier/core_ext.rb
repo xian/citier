@@ -39,6 +39,16 @@ def create_citier_view(theclass)  #function for creating views for migrations
   sql = "CREATE VIEW #{self_read_table} AS SELECT #{parent_read_table}.id, #{columns.join(',')} FROM #{parent_read_table}, #{self_write_table} WHERE #{parent_read_table}.id = #{self_write_table}.id" 
   citier_debug("Creating citier view -> #{sql}")
   theclass.connection.execute sql
+  
+  #flush any column info in memory
+  #Loops through and stops once we've cleaned up to our root class.
+  reset_class = theclass  
+  until reset_class == ActiveRecord::Base
+    citier_debug("Resetting column information on #{reset_class}")
+    reset_class.reset_column_information
+    reset_class = reset_class.superclass
+  end
+  
 end
 
 def drop_citier_view(theclass) #function for dropping views for migrations 
