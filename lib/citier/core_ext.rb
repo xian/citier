@@ -47,3 +47,29 @@ def drop_citier_view(theclass) #function for dropping views for migrations
   citier_debug("Dropping citier view -> #{sql}")
   theclass.connection.execute sql
 end
+
+def update_citier_view(theclass) #function for updating views for migrations
+  
+  citier_debug("Updating citier view for #{theclass}")
+  
+  if theclass.table_exists?
+    drop_citier_view(theclass)
+    create_citier_view(theclass)
+  else
+    citier_debug("Error: #{theclass} VIEW doesn't exist.")
+  end
+  
+end
+
+def create_or_update_citier_view(theclass) #Convienience function for updating or creating views for migrations
+  
+  citier_debug("Create or Update citier view for #{theclass}")
+  
+  if theclass.table_exists?
+    update_citier_view(theclass)
+  else
+    citier_debug("VIEW DIDN'T EXIST. Now creating for #{theclass}")
+    create_citier_view(theclass)
+  end
+  
+end

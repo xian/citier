@@ -47,6 +47,7 @@ module ClassMethods
       end
 
       def self.find(*args) #overrides find to get all attributes
+
         tuples = super
 
         # in case of many objects, return an array of them, reloaded to pull in inherited attributes
