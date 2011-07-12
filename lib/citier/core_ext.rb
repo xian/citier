@@ -37,8 +37,9 @@ def create_citier_view(theclass)  #function for creating views for migrations
   self_write_table = theclass::Writable.table_name
   parent_read_table = theclass.superclass.table_name
   sql = "CREATE VIEW #{self_read_table} AS SELECT #{parent_read_table}.id, #{columns.join(',')} FROM #{parent_read_table}, #{self_write_table} WHERE #{parent_read_table}.id = #{self_write_table}.id" 
+  create_view "#{self_read_table}", "SELECT #{parent_read_table}.id, #{columns.join(',')} FROM #{parent_read_table}, #{self_write_table} WHERE #{parent_read_table}.id = #{self_write_table}.id"
   citier_debug("Creating citier view -> #{sql}")
-  theclass.connection.execute sql
+  #theclass.connection.execute sql
   
   #flush any column info in memory
   #Loops through and stops once we've cleaned up to our root class.
