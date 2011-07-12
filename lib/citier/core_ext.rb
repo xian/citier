@@ -63,8 +63,11 @@ end
 def drop_citier_view(theclass) #function for dropping views for migrations 
   self_read_table = theclass.table_name
   sql = "DROP VIEW #{self_read_table}"
+  
+  drop_view(self_read_table.to_sym) #drop using our rails sql views gem
+  
   citier_debug("Dropping citier view -> #{sql}")
-  theclass.connection.execute sql
+  #theclass.connection.execute sql
 end
 
 def update_citier_view(theclass) #function for updating views for migrations
