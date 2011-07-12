@@ -37,7 +37,15 @@ def create_citier_view(theclass)  #function for creating views for migrations
   self_write_table = theclass::Writable.table_name
   parent_read_table = theclass.superclass.table_name
   sql = "CREATE VIEW #{self_read_table} AS SELECT #{parent_read_table}.id, #{columns.join(',')} FROM #{parent_read_table}, #{self_write_table} WHERE #{parent_read_table}.id = #{self_write_table}.id" 
-  create_view "#{self_read_table}", "SELECT #{parent_read_table}.id, #{columns.join(',')} FROM #{parent_read_table}, #{self_write_table} WHERE #{parent_read_table}.id = #{self_write_table}.id"
+  
+  #Use our rails_sql_views gem to create the view so we get it outputted to schema
+  create_view "#{self_read_table}", "SELECT #{parent_read_table}.id, #{columns.join(',')} FROM #{parent_read_table}, #{self_write_table} WHERE #{parent_read_table}.id = #{self_write_table}.id", do |v|
+    v.column :id
+    columns.each do |c|
+      v.column c.to_sym
+    end
+  end
+  
   citier_debug("Creating citier view -> #{sql}")
   #theclass.connection.execute sql
   
