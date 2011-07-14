@@ -31,7 +31,8 @@ module InstanceMethods
   # Needed because validates :attribute, :uniqueness => true  Won't work because it tries to call child_class.attribute on parents table
   class CitierUniquenessValidator < ActiveModel::EachValidator  
     def validate_each(object, attribute, value)
-      if object.class.where(attribute.to_sym => value).limit(1).first 
+      existing_record = object.class.where(attribute.to_sym => value).limit(1).first
+      if existing_record && existing_record != object #if prev record exist and it isn't our current obj
             object.errors[attribute] << (options[:message] || "has already been taken.")  
       end 
     end  
