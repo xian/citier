@@ -43,7 +43,7 @@ module InstanceMethods
     # Without this it would revert back to the root class
     type = self.type || self.class.to_s
            
-    sql = "UPDATE #{self.class.root_class.table_name} SET #{self.class.inheritance_column} = '#{self.class.to_s}' WHERE id = #{self.id}"
+    sql = "UPDATE #{self.class.root_class.table_name} SET #{self.class.inheritance_column} = '#{type}' WHERE id = #{self.id}"
     self.connection.execute(sql)
     citier_debug("#{sql}")
   end
