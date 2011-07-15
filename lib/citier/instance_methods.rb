@@ -38,7 +38,11 @@ module InstanceMethods
     
   end
 
-  def updatetype        
+  def updatetype 
+    # Keeps our types intact when we've retrieved a record through Root.first etc. and save it.
+    # Without this it would revert back to the root class
+    type = self.type || self.class.to_s
+           
     sql = "UPDATE #{self.class.root_class.table_name} SET #{self.class.inheritance_column} = '#{self.class.to_s}' WHERE id = #{self.id}"
     self.connection.execute(sql)
     citier_debug("#{sql}")

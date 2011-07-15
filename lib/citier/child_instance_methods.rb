@@ -14,7 +14,8 @@ module ChildInstanceMethods
     #create a new instance of the superclass, passing the inherited attributes.
     parent = self.class.superclass.new(attributes_for_parent)
     parent.id = self.id
-
+    parent.type = self.type
+    
     parent.is_new_record(new_record?)
 
     parent_saved = parent.save
@@ -51,29 +52,6 @@ module ChildInstanceMethods
     
     return parent_saved && current_saved
   end
-  
-  # Access the root class if ever you need.
-  def as_root
-     if self.class.superclass != ActiveRecord::Base
-       root_class = self.class.superclass  
-
-       #get to the root of it
-       while root_class.superclass != ActiveRecord::Base
-         root_class = root_class.superclass
-       end
-       puts "Root class is #{root_class}"
-       #get the attributes of the class which are inherited from it's parent.
-       attributes_for_parent = self.attributes.reject{|key,value| !root_class.column_names.include?(key) }
-
-       #create a new instance of the superclass, passing the inherited attributes.
-       parent = root_class.new(attributes_for_parent)
-       parent.id = self.id
-
-       parent.is_new_record(new_record?)
-
-       parent
-     end
-   end
   
   def save!
     raise ActiveRecord::RecordInvalid.new(self) unless self.valid?
