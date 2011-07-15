@@ -8,13 +8,34 @@ module InstanceMethods
     # (if there is such a table)
     deleted = true
     c = self.class
-    while c.superclass!=ActiveRecord::Base
-      citier_debug("Deleting back up hierarchy #{c}")
-      deleted &= c::Writable.delete(id)
-      c = c.superclass
+    
+    # We're either deleting the root class or an instance.
+    
+    if c.superclass==ActiveRecord::Base
+      # 1 #### we're deleting the root so delete down the heirachy to make sure we leave no stragglers.
+      
+      #delete it's children
+      if self.type != self.class.to_s
+        citier_debug("Deleting Child Class Instance #{self} from bottom class with ID #{self.id}")
+        self.as_child.destroy #Will loop back through this method but take the below root instead  
+      else
+        super() #just call our super deleted method
+      end
+      
+    else
+      # 2 #### we're deleting a child so delete up the hierachy to leave no trace.
+      
+      while c.superclass!=ActiveRecord::Base
+        citier_debug("Deleting back up hierarchy #{c}")
+        deleted &= c::Writable.delete(id)
+        c = c.superclass
+      end
+    
+      deleted &= c.delete(id)
+      return deleted
+      
     end
-    deleted &= c.delete(id)
-    return deleted
+    
   end
 
   def updatetype        
