@@ -32,6 +32,7 @@ module ChildInstanceMethods
     if(!attributes_for_current.empty? && parent_saved)
       current = self.class::Writable.new(attributes_for_current)
       current.id = self.id
+      current.type = self.type
       current.is_new_record(new_record?)
       current_saved = current.save
       
