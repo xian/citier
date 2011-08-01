@@ -10,3 +10,8 @@
 	float:left;
 	width: 200px;
 }
+
+.download a{
+  float:left;
+  display: block;
+}
