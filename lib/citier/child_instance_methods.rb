@@ -13,7 +13,7 @@ module ChildInstanceMethods
 
     #create a new instance of the superclass, passing the inherited attributes.
     parent = self.class.superclass.new(attributes_for_parent)
-    parent.id = self.id
+    parent.id = self.id if id
 
     parent.is_new_record(new_record?)
 
