@@ -9,8 +9,10 @@ module InstanceMethods
     deleted = true
     c = self.class
     while c.superclass!=ActiveRecord::Base
-      citier_debug("Deleting back up hierarchy #{c}")
-      deleted &= c::Writable.delete(id)
+      if c.const_defined?(:Writable)
+        citier_debug("Deleting back up hierarchy #{c}")
+        deleted &= c::Writable.delete(id)
+      end
       c = c.superclass
     end
     deleted &= c.delete(id)
