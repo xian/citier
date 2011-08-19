@@ -11,7 +11,7 @@ module RootInstanceMethods
   
   # Access the root class if ever you need.
   def as_root
-     if self.class.superclass != ActiveRecord::Base
+     if !self.is_root?
        root_class = self.class.superclass  
 
        #get to the root of it
@@ -33,6 +33,11 @@ module RootInstanceMethods
      else
         self #just return self if we are the root
      end
+  end
+  
+  #Convienience for testing to see wether we are base or not
+  def is_root?
+    self.class.superclass==ActiveRecord::Base
   end
 
 end
