@@ -2,7 +2,14 @@ module ChildInstanceMethods
 
   def save(validate = true)
     return false unless self.valid?
-
+    
+    #citier_debug("Callback (#{self.inspect})")
+    citier_debug("SAVING #{self.class.to_s}")
+    
+    #Just run before save callbacks
+    #AIT NOTE: Will change any protected values back to original values so any models onwards won't see changes.
+    self.run_callbacks(:save){ false }
+    
     #get the attributes of the class which are inherited from it's parent.
     attributes_for_parent = self.attributes.reject{|key,value| !self.class.superclass.column_names.include?(key) }
 
@@ -11,6 +18,10 @@ module ChildInstanceMethods
 
     citier_debug("Attributes for #{self.class.to_s}: #{attributes_for_current.inspect.to_s}")
 
+    ########
+    #
+    # Parent saving
+    
     #create a new instance of the superclass, passing the inherited attributes.
     parent = self.class.superclass.new(attributes_for_parent)
     parent.id = self.id
@@ -18,6 +29,8 @@ module ChildInstanceMethods
     
     parent.is_new_record(new_record?)
 
+    # If we're root (AR subclass) this will just be saved as normal through AR. If we're a child it will call this method again. 
+    # It will try and save it's parent and then save itself through the Writable constant.
     parent_saved = parent.save
     self.id = parent.id
 
@@ -26,20 +39,33 @@ module ChildInstanceMethods
       # TODO: Handle situation where parent class could not be saved
       citier_debug("Class (#{self.class.superclass.to_s}) could not be saved")
     end
+    
+    #End of parent saving
+    
+    ######
+    ##
+    ## Self Saving
+    ##
 
     # If there are attributes for the current class (unique & not inherited) 
     # and parent(s) saved successfully, save current model
     if(!attributes_for_current.empty? && parent_saved)
+       
       current = self.class::Writable.new(attributes_for_current)
       current.id = self.id
       current.is_new_record(new_record?)
+      citier_debug(self.class.all.to_s)
+      
       current_saved = current.save
+      self.run_callbacks(:save){ true } #Run the after save callback
       
       # This is no longer a new record
       is_new_record(false)
 
       if(!current_saved)
         citier_debug("Class (#{self.class.superclass.to_s}) could not be saved")
+        citier_debug("Errors = #{current.errors.to_s}")
+        
       end
     end
 

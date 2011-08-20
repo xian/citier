@@ -6,7 +6,7 @@ module RootInstanceMethods
   # make sure we're not leaving children behind
   def as_child
     #instance_class = Object.const_get(self.type)
-    return bottom_class_instance = self.class.where(:id => self.id).first
+    return bottom_class_instance = Kernel.const_get(self.type).where(:id => self.id).first
   end
   
   # Access the root class if ever you need.
@@ -35,7 +35,11 @@ module RootInstanceMethods
      end
   end
   
-  #Convienience for testing to see wether we are base or not
+  #For testing whther we are using the framework or not
+  def acts_as_citier?
+    true
+  end
+  
   def is_root?
     self.class.superclass==ActiveRecord::Base
   end
