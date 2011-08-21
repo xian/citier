@@ -1,32 +1,34 @@
-module InstanceMethods
+module Citier
+  module InstanceMethods
 
-  # Delete the model (and all parents it inherits from if applicable)
-  def delete(id = self.id)
-    citier_debug("Deleting #{self.class.to_s} with ID #{self.id}")
+    # Delete the model (and all parents it inherits from if applicable)
+    def delete(id = self.id)
+      citier_debug("Deleting #{self.class.to_s} with ID #{self.id}")
 
-    # Delete information stored in the table associated to the class of the object
-    # (if there is such a table)
-    deleted = true
-    c = self.class
-    while c.superclass!=ActiveRecord::Base
-      if c.const_defined?(:Writable)
-        citier_debug("Deleting back up hierarchy #{c}")
-        deleted &= c::Writable.delete(id)
+      # Delete information stored in the table associated to the class of the object
+      # (if there is such a table)
+      deleted = true
+      c = self.class
+      while c.superclass!=ActiveRecord::Base
+        if c.const_defined?(:Writable)
+          citier_debug("Deleting back up hierarchy #{c}")
+          deleted &= c::Writable.delete(id)
+        end
+        c = c.superclass
       end
-      c = c.superclass
+      deleted &= c.delete(id)
+      return deleted
     end
-    deleted &= c.delete(id)
-    return deleted
-  end
 
-  def updatetype        
-    sql = "UPDATE #{self.class.root_class.table_name} SET #{self.class.inheritance_column} = '#{self.class.to_s}' WHERE id = #{self.id}"
-    self.connection.execute(sql)
-    citier_debug("#{sql}")
-  end
+    def updatetype        
+      sql = "UPDATE #{self.class.root_class.table_name} SET #{self.class.inheritance_column} = '#{self.class.to_s}' WHERE id = #{self.id}"
+      self.connection.execute(sql)
+      citier_debug("#{sql}")
+    end
 
-  def destroy
-    return self.delete
-  end
+    def destroy
+      return self.delete
+    end
 
+  end
 end

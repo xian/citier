@@ -1,5 +1,7 @@
-module RootInstanceMethods
+module Citier
+  module RootInstanceMethods
 
-  include InstanceMethods
+    include Citier::InstanceMethods
 
+  end
 end
