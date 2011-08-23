@@ -49,7 +49,9 @@ module InstanceMethods
   end
 
   def destroy
-    return self.delete
+    run_callbacks :destroy do
+      return self.delete
+    end
   end
   
   # USAGE validates :attribute, :citier_uniqueness => true
