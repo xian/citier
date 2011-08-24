@@ -15,7 +15,7 @@ module InstanceMethods
       # 1 #### we're deleting the root so delete down the heirachy to make sure we leave no stragglers.
       
       #delete it's children
-      if self.type != self.class.to_s
+      if (self.type != self.class.to_s) && self.type #Check for type as we might try and destroy straight after create a root. Type will only be nil for root instance
         citier_debug("Deleting Child Class Instance #{self} from bottom class with ID #{self.id}")
         self.as_child.destroy #Will loop back through this method but take the below root instead  
       else
