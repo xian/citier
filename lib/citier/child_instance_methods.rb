@@ -55,7 +55,6 @@ module Citier
         current = self.class::Writable.new(attributes_for_current)
         current.id = self.id
         current.is_new_record(new_record?)
-        citier_debug(self.class.all.to_s)
       
         current_saved = current.save
       
