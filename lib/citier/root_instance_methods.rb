@@ -13,12 +13,7 @@ module Citier
     # Access the root class if ever you need.
     def as_root
        if !self.is_root?
-         root_class = self.class.superclass  
-
-         #get to the root of it
-         while root_class.superclass != ActiveRecord::Base
-           root_class = root_class.superclass
-         end
+         root_class = self.class.base_class
 
          #get the attributes of the class which are inherited from it's parent.
          attributes_for_parent = self.attributes.reject{|key,value| !root_class.column_names.include?(key) }

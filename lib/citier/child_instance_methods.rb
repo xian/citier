@@ -75,7 +75,7 @@ module Citier
 
       # Update root class with this 'type'
       if parent_saved && current_saved
-        sql = "UPDATE #{self.class.root_class.table_name} SET #{self.class.inheritance_column} = '#{self.class.to_s}' WHERE id = #{self.id}"
+        sql = "UPDATE #{self.class.base_class.table_name} SET #{self.class.inheritance_column} = '#{self.class.to_s}' WHERE id = #{self.id}"
         citier_debug("SQL : #{sql}")
         self.connection.execute(sql)
       end

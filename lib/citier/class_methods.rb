@@ -38,14 +38,6 @@ module Citier
         set_table_name "#{table_name}"
 
         citier_debug("table_name -> #{self.table_name}")
-        #returns the root class (the highest inherited class before ActiveRecord)
-        def self.root_class
-          if(self.superclass!=ActiveRecord::Base)
-          self.superclass.root_class
-          else
-          return self
-          end
-        end
 
         def self.find(*args) #overrides find to get all attributes
 
@@ -58,15 +50,6 @@ module Citier
           # Can't use reload as would loop inifinitely, so do a search by id instead.
           # Probably a nice way of cleaning this a bit
           return tuples.class.where(tuples.class[:id].eq(tuples.id))[0]
-        end
-
-        # Unlike destroy_all it is useful to override this method.
-        # In fact destroy_all will explicitly call a destroy method on each object
-        # whereas delete_all doesn't and only calls specific SQL requests.
-        # To be even more precise call delete_all with special conditions
-        def self.delete_all
-          #call delete method for each instance of the class
-          self.all.each{|o| o.delete }
         end
 
         # Add the functions required for root classes only
