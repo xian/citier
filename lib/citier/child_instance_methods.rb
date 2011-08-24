@@ -60,7 +60,7 @@ module ChildInstanceMethods
       
       #self.run_callbacks(:save){ false } #Run the after save callback
       # Rails 3 doesn't yet have a way of only called AFTER save callback
-      current.after_save_change_request if current.respond_to?('after_save_change_request') #Specific to an app I'm building
+      self.after_save_change_request if self.respond_to?('after_save_change_request') #Specific to an app I'm building
       
       # This is no longer a new record
       is_new_record(false)
