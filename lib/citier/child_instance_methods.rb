@@ -9,7 +9,7 @@ module ChildInstanceMethods
     #Just run before save callbacks
     #AIT NOTE: Will change any protected values back to original values so any models onwards won't see changes.
     self.run_callbacks(:save){ false }
-    
+  
     #get the attributes of the class which are inherited from it's parent.
     attributes_for_parent = self.attributes.reject{|key,value| !self.class.superclass.column_names.include?(key) }
 
@@ -31,7 +31,18 @@ module ChildInstanceMethods
 
     # If we're root (AR subclass) this will just be saved as normal through AR. If we're a child it will call this method again. 
     # It will try and save it's parent and then save itself through the Writable constant.
-    parent_saved = parent.save
+    
+    #Specific to my app
+    if parent.is_root?
+      parent.class.skip_callback(:save, :before, :before_save_change_request) 
+      parent.class.skip_callback(:save, :after, :after_save_change_request)
+      parent_saved = parent.save
+      parent.class.set_callback(:save, :before, :before_save_change_request)
+      parent.class.set_callback(:save, :after, :after_save_change_request)
+    else
+      parent_saved = parent.save
+    end
+    
     self.id = parent.id
 
     if(parent_saved==false)
@@ -58,7 +69,6 @@ module ChildInstanceMethods
       
       current_saved = current.save
       
-      #self.run_callbacks(:save){ false } #Run the after save callback
       # Rails 3 doesn't yet have a way of only called AFTER save callback
       self.after_save_change_request if self.respond_to?('after_save_change_request') #Specific to an app I'm building
       
