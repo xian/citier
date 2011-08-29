@@ -29,6 +29,19 @@ class ActiveRecord::Base
   end
 end
 
+def reset_table_info(theclass)
+  
+  #flush any column info in memory
+  #Loops through and stops once we've cleaned up to our root class.
+  reset_class = theclass  
+  until reset_class == ActiveRecord::Base
+    citier_debug("Resetting column information on #{reset_class}")
+    reset_class.reset_column_information
+    reset_class = reset_class.superclass
+  end
+  
+end
+
 def create_citier_view(theclass)  #function for creating views for migrations 
   self_columns = theclass::Writable.column_names.select{ |c| c != "id" }
   parent_columns = theclass.superclass.column_names.select{ |c| c != "id" }
@@ -49,14 +62,7 @@ def create_citier_view(theclass)  #function for creating views for migrations
   citier_debug("Creating citier view -> #{sql}")
   #theclass.connection.execute sql
   
-  #flush any column info in memory
-  #Loops through and stops once we've cleaned up to our root class.
-  reset_class = theclass  
-  until reset_class == ActiveRecord::Base
-    citier_debug("Resetting column information on #{reset_class}")
-    reset_class.reset_column_information
-    reset_class = reset_class.superclass
-  end
+  reset_table_info(theclass)
   
 end
 
@@ -68,6 +74,9 @@ def drop_citier_view(theclass) #function for dropping views for migrations
   
   citier_debug("Dropping citier view -> #{sql}")
   #theclass.connection.execute sql
+  
+  reset_table_info(theclass)
+  
 end
 
 def update_citier_view(theclass) #function for updating views for migrations
