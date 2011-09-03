@@ -1,5 +1,23 @@
 module Citier
-  module InstanceMethods
+  module InstanceMethods    
+    def self.included(base)
+      base.send :include, ForcedWriters
+    end
+    
+    module ForcedWriters
+      def force_attributes(new_attributes, options = {})
+        new_attributes = @attributes.merge(new_attributes) if options[:merge]
+        @attributes = new_attributes
+        @aggregation_cache = {}
+        @association_cache = {}
+        @attributes_cache = {}
+      end
+    
+      def force_changed_attributes(new_changed_attributes, options = {})
+        new_changed_attributes = @attributes.merge(new_changed_attributes) if options[:merge]
+        @changed_attributes = new_changed_attributes
+      end
+    end
 
     def updatetype 
       # Keeps our types intact when we've retrieved a record through Root.first etc. and save it.

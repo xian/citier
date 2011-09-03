@@ -12,10 +12,12 @@ module Citier
       self.run_callbacks(:save){ false }
     
       #get the attributes of the class which are inherited from it's parent.
-      attributes_for_parent = self.attributes.reject{|key,value| !self.class.superclass.column_names.include?(key) }
+      attributes_for_parent = self.attributes.reject { |key,value| !self.class.superclass.column_names.include?(key) }
+      changed_attributes_for_parent = self.changed_attributes.reject { |key,value| !self.class.superclass.column_names.include?(key) }
 
       # Get the attributes of the class which are unique to this class and not inherited.
-      attributes_for_current = self.attributes.reject{|key,value| self.class.superclass.column_names.include?(key) }
+      attributes_for_current = self.attributes.reject { |key,value| self.class.superclass.column_names.include?(key) }
+      changed_attributes_for_current = self.changed_attributes.reject { |key,value| self.class.superclass.column_names.include?(key) }
 
       citier_debug("Attributes for #{self.class.to_s}: #{attributes_for_current.inspect.to_s}")
 
@@ -24,12 +26,17 @@ module Citier
       # Parent saving
     
       #create a new instance of the superclass, passing the inherited attributes.
-      parent = self.class.superclass.new(attributes_for_parent)
+      parent = self.class.superclass.new
+      
+      parent.force_attributes(attributes_for_parent, :merge => true)
+      changed_attributes_for_parent["id"] = 0 # We need to change at least something so timestamps are updated.
+      parent.force_changed_attributes(changed_attributes_for_parent)
+      
       parent.id = self.id if id
       parent.type = self.type
     
       parent.is_new_record(new_record?)
-
+      
       # If we're root (AR subclass) this will just be saved as normal through AR. If we're a child it will call this method again. 
       # It will try and save it's parent and then save itself through the Writable constant.
       parent_saved = parent.save
@@ -52,7 +59,11 @@ module Citier
       # and parent(s) saved successfully, save current model
       if(!attributes_for_current.empty? && parent_saved)
        
-        current = self.class::Writable.new(attributes_for_current)
+        current = self.class::Writable.new
+        
+        current.force_attributes(attributes_for_current, :merge => true)
+        current.force_changed_attributes(changed_attributes_for_current)
+        
         current.id = self.id
         current.is_new_record(new_record?)
       
@@ -78,7 +89,9 @@ module Citier
         citier_debug("SQL : #{sql}")
         self.connection.execute(sql)
       end
-    
+      
+      self.force_changed_attributes({})
+      
       return parent_saved && current_saved
     end
   

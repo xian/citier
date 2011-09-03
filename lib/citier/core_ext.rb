@@ -15,6 +15,8 @@ class ActiveRecord::Base
 
   def self.create_class_writable(class_reference)  #creation of a new class which inherits from ActiveRecord::Base
     Class.new(ActiveRecord::Base) do
+      include Citier::InstanceMethods::ForcedWriters
+      
       t_name = class_reference.table_name
       t_name = t_name[5..t_name.length]
 
