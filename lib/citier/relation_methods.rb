@@ -9,12 +9,21 @@ module ActiveRecord
         deleted = true
         ids = nil
         c = @klass
-        ids = where_values_hash[:id]
-        deleted &= c.base_class.where(:id => ids).relation_delete_all
-        while c.superclass!=ActiveRecord::Base
+        
+        bind_values.each do |bind_value|
+          if bind_value[0].name == "id"
+            ids = bind_value[1]
+            break
+          end
+        end
+        ids ||= where_values_hash["id"] || where_values_hash[:id]
+        where_hash = ids ? { :id => ids } : nil
+        
+        deleted &= c.base_class.where(where_hash).relation_delete_all
+        while c.superclass != ActiveRecord::Base
           if c.const_defined?(:Writable)
             citier_debug("Deleting back up hierarchy #{c}")
-            deleted &= c::Writable.where(:id => ids).delete_all
+            deleted &= c::Writable.where(where_hash).delete_all
           end
           c = c.superclass
         end
