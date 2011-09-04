@@ -19,7 +19,10 @@ module Citier
       attributes_for_current = self.attributes.reject { |key,value| self.class.superclass.column_names.include?(key) }
       changed_attributes_for_current = self.changed_attributes.reject { |key,value| self.class.superclass.column_names.include?(key) }
 
-      citier_debug("Attributes for #{self.class.to_s}: #{attributes_for_current.inspect.to_s}")
+      citier_debug("Attributes for #{self.class.superclass.to_s}: #{attributes_for_parent.inspect}")
+      citier_debug("Changed attributes for #{self.class.superclass.to_s}: #{changed_attributes_for_parent.keys.inspect}")
+      citier_debug("Attributes for #{self.class.to_s}: #{attributes_for_current.inspect}")
+      citier_debug("Changed attributes for #{self.class.to_s}: #{changed_attributes_for_current.keys.inspect}")
 
       ########
       #
@@ -29,7 +32,7 @@ module Citier
       parent = self.class.superclass.new
       
       parent.force_attributes(attributes_for_parent, :merge => true)
-      changed_attributes_for_parent["id"] = 0 # We need to change at least something so timestamps are updated.
+      changed_attributes_for_parent["id"] = 0 # We need to change at least something to force a timestamps update.
       parent.force_changed_attributes(changed_attributes_for_parent)
       
       parent.id = self.id if id
@@ -79,18 +82,12 @@ module Citier
         if(!current_saved)
           citier_debug("Class (#{self.class.superclass.to_s}) could not be saved")
           citier_debug("Errors = #{current.errors.to_s}")
-        
         end
       end
 
-      # Update root class with this 'type'
       if parent_saved && current_saved
-        sql = "UPDATE #{self.class.base_class.table_name} SET #{self.class.inheritance_column} = '#{self.class.to_s}' WHERE id = #{self.id}"
-        citier_debug("SQL : #{sql}")
-        self.connection.execute(sql)
+        self.force_changed_attributes({})
       end
-      
-      self.force_changed_attributes({})
       
       return parent_saved && current_saved
     end

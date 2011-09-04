@@ -35,8 +35,6 @@ module Citier
       else
       # Root class
 
-        after_save :updatetype
-
         citier_debug("Root Class")
 
         set_table_name "#{table_name}"
