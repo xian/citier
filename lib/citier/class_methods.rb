@@ -42,7 +42,15 @@ module Citier
         citier_debug("table_name -> #{self.table_name}")
 
         def self.find(*args) #overrides find to get all attributes
+          # With option :no_children set to true, only records of type self will be returned. 
+          # So Root.all(:no_children => true) won't return Child records.
+          options = args.last.is_a?(Hash) ? args.last : {}
+          no_children = options.delete(:no_children)
+          self_type = self.superclass == ActiveRecord::Base ? nil : self.name
+          return self.where(:type => self_type).find(*args) if no_children
+          
           tuples = super
+          
           # If the tuple is already of this class's type, we don't need to reload it.
           return tuples if tuples.kind_of?(Array) ? tuples.all? { |tuple| tuple.class == self } : (tuples.class == self) 
           
