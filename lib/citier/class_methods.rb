@@ -43,13 +43,41 @@ module Citier
 
         def self.find(*args) #overrides find to get all attributes
           tuples = super
-          tuples_class = tuples.kind_of?(Array) ? tuples.first.class : tuples.class
-          return tuples if self == tuples_class
+          # If the tuple is already of this class's type, we don't need to reload it.
+          return tuples if tuples.kind_of?(Array) ? tuples.all? { |tuple| tuple.class == self } : (tuples.class == self) 
+          
+          # In case of multiple tuples, find the correct ones using one query per type.
+          if tuples.kind_of?(Array)
+            found_records = []
+            ids_wanted = {}
+            
+            # Map all the ids wanted per type
+            tuples.each_with_index do |tuple, index|
+              if tuple.class == self # We don't need to find the record again if this is already the correct one
+                found_records << tuple
+                next
+              end
+              
+              type_ids_wanted = ids_wanted[tuple.class]
+              type_ids_wanted ||= ids_wanted[tuple.class] = []
+              type_ids_wanted << tuple.id
+            end
+            
+            # Find all wanted records
+            ids_wanted.each do |type, ids|
+              found_records.push(*type.find(ids))
+            end
+            
+            # Make a new array with the found records at the right places
+            reloaded_tuples = []
+            tuples.each do |tuple|
+              reloaded_tuples << found_records.find { |found| found.id == tuple.id }
+            end
+            
+            return reloaded_tuples
+          end
 
-          # in case of many objects, return an array of them, reloaded to pull in inherited attributes
-          return tuples.map { |x| x.reload } if tuples.kind_of?(Array)
-
-          # in case of only one tuple, return it reloaded.
+          # In case of only one tuple, return it reloaded.
           return tuples.reload
         end
 
