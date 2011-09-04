@@ -77,12 +77,12 @@ module Citier
             end
             
             # Make a new array with the found records at the right places
-            reloaded_tuples = []
-            tuples.each do |tuple|
-              reloaded_tuples << found_records.find { |found| found.id == tuple.id }
+            tuples.each do |tuple|              
+              found_record = found_records.find { |found| found.id == tuple.id }
+              tuple.force_attributes(found_record.instance_variable_get(:@attributes), :merge => true, :clear_caches => false)
             end
             
-            return reloaded_tuples
+            return tuples
           end
 
           # In case of only one tuple, return it reloaded.

@@ -8,9 +8,12 @@ module Citier
       def force_attributes(new_attributes, options = {})
         new_attributes = @attributes.merge(new_attributes) if options[:merge]
         @attributes = new_attributes
-        @aggregation_cache = {}
-        @association_cache = {}
-        @attributes_cache = {}
+        
+        if options[:clear_caches] != false
+          @aggregation_cache = {}
+          @association_cache = {}
+          @attributes_cache = {}
+        end
       end
     
       def force_changed_attributes(new_changed_attributes, options = {})
