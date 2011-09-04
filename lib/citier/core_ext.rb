@@ -1,4 +1,12 @@
-class ActiveRecord::Base  
+class ActiveRecord::Base 
+  
+  def self.set_acts_as_citier(citier)
+    @acts_as_citier = citier
+  end
+  
+  def self.acts_as_citier?
+    @acts_as_citier || false
+  end
 
   def self.[](column_name) 
     arel_table[column_name]
@@ -6,17 +14,6 @@ class ActiveRecord::Base
 
   def is_new_record(state)
     @new_record = state
-  end
-  
-  # For some reason need to override this so it uses my modified find function which reloads each object to pull in all properties.
-  def self.all(*args)
-    return find(:all, *args)
-  end
-  def self.first(*args)
-    return find(:first, *args)
-  end
-  def self.last(*args)
-    return find(:last, *args)
   end
 
   def self.create_class_writable(class_reference)  #creation of a new class which inherits from ActiveRecord::Base

@@ -2,6 +2,7 @@ module Citier
   module ClassMethods
     # any method placed here will apply to classes
     def acts_as_citier(options = {})
+      set_acts_as_citier(true)
 
       # Option for setting the inheritance columns, default value = 'type'
       db_type_field = (options[:db_type_field] || :type).to_s
@@ -40,54 +41,6 @@ module Citier
         set_table_name "#{table_name}"
 
         citier_debug("table_name -> #{self.table_name}")
-
-        def self.find(*args) #overrides find to get all attributes
-          # With option :no_children set to true, only records of type self will be returned. 
-          # So Root.all(:no_children => true) won't return Child records.
-          options = args.last.is_a?(Hash) ? args.last : {}
-          no_children = options.delete(:no_children)
-          self_type = self.superclass == ActiveRecord::Base ? nil : self.name
-          return self.where(:type => self_type).find(*args) if no_children
-          
-          tuples = super
-          
-          # If the tuple is already of this class's type, we don't need to reload it.
-          return tuples if tuples.kind_of?(Array) ? tuples.all? { |tuple| tuple.class == self } : (tuples.class == self) 
-          
-          # In case of multiple tuples, find the correct ones using one query per type.
-          if tuples.kind_of?(Array)
-            found_records = []
-            ids_wanted = {}
-            
-            # Map all the ids wanted per type
-            tuples.each do |tuple|
-              if tuple.class == self # We don't need to find the record again if this is already the correct one
-                found_records << tuple
-                next
-              end
-              
-              type_ids_wanted = ids_wanted[tuple.class]
-              type_ids_wanted ||= ids_wanted[tuple.class] = []
-              type_ids_wanted << tuple.id
-            end
-            
-            # Find all wanted records
-            ids_wanted.each do |type, ids|
-              found_records.push(*type.find(ids))
-            end
-            
-            # Make a new array with the found records at the right places
-            tuples.each do |tuple|              
-              found_record = found_records.find { |found| found.id == tuple.id }
-              tuple.force_attributes(found_record.instance_variable_get(:@attributes), :merge => true, :clear_caches => false)
-            end
-            
-            return tuples
-          end
-
-          # In case of only one tuple, return it reloaded.
-          return tuples.reload
-        end
 
         # Add the functions required for root classes only
         send :include, Citier::RootInstanceMethods
