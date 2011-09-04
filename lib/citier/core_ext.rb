@@ -8,9 +8,15 @@ class ActiveRecord::Base
     @new_record = state
   end
   
+  # For some reason need to override this so it uses my modified find function which reloads each object to pull in all properties.
   def self.all(*args)
-    # For some reason need to override this so it uses my modified find function which reloads each object to pull in all properties.
     return find(:all, *args)
+  end
+  def self.first(*args)
+    return find(:first, *args)
+  end
+  def self.last(*args)
+    return find(:last, *args)
   end
 
   def self.create_class_writable(class_reference)  #creation of a new class which inherits from ActiveRecord::Base
