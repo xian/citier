@@ -76,16 +76,19 @@ module ActiveRecord
     def apply_finder_options(options)
       return relation_apply_finder_options(options) if !@klass.acts_as_citier?
       
-      puts "Using custom apply_finder_options!"
+      relation = self
+      
       # With option :no_children set to true, only records of type self will be returned. 
       # So Root.all(:no_children => true) won't return Child records.
       no_children = options.delete(:no_children)
       if no_children
+        relation = clone
+        
         self_type = self.superclass == ActiveRecord::Base ? nil : self.name
-        options[:conditions] = (options[:conditions] || {}).merge( :type => self_type )
+        relation = relation.where(:type => self_type)
       end
       
-      relation_apply_finder_options(options)
+      relation.relation_apply_finder_options(options)
     end
   end
 end
