@@ -52,7 +52,7 @@ module Citier
             ids_wanted = {}
             
             # Map all the ids wanted per type
-            tuples.each_with_index do |tuple, index|
+            tuples.each do |tuple|
               if tuple.class == self # We don't need to find the record again if this is already the correct one
                 found_records << tuple
                 next
