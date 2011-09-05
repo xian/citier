@@ -83,8 +83,10 @@ module ActiveRecord
       no_children = options.delete(:no_children)
       if no_children
         relation = clone
+
+        c = @klass
         
-        self_type = self.superclass == ActiveRecord::Base ? nil : self.name
+        self_type = c.superclass == ActiveRecord::Base ? nil : c.name
         relation = relation.where(:type => self_type)
       end
       
