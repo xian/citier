@@ -6,9 +6,9 @@
 #------------------------------------------------------------------------------------------------#
 
 require 'active_record'
-require 'active_record/connection_adapters/sqlite_adapter'
-require 'active_record/connection_adapters/sqlite3_adapter'
-require 'active_record/connection_adapters/postgresql_adapter'
+#require 'active_record/connection_adapters/sqlite_adapter'
+#require 'active_record/connection_adapters/sqlite3_adapter'
+#require 'active_record/connection_adapters/postgresql_adapter'
 
 # SQLite
 module ActiveRecord
