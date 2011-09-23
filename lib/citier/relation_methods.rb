@@ -1,5 +1,5 @@
 module ActiveRecord
-  class Relation
+  class Base
     
     alias_method :relation_delete_all, :delete_all
     def delete_all(conditions = nil)
