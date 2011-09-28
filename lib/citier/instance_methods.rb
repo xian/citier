@@ -1,4 +1,5 @@
 module Citier
+<<<<<<< HEAD
   module InstanceMethods
 
     def updatetype 
@@ -10,6 +11,29 @@ module Citier
       sql = "UPDATE #{self.class.base_class.table_name} SET #{self.class.inheritance_column} = '#{type}' WHERE id = #{self.id}"
       self.connection.execute(sql)
       citier_debug("#{sql}")
+=======
+  module InstanceMethods    
+    def self.included(base)
+      base.send :include, ForcedWriters
+    end
+    
+    module ForcedWriters
+      def force_attributes(new_attributes, options = {})
+        new_attributes = @attributes.merge(new_attributes) if options[:merge]
+        @attributes = new_attributes
+        
+        if options[:clear_caches] != false
+          @aggregation_cache = {}
+          @association_cache = {}
+          @attributes_cache = {}
+        end
+      end
+    
+      def force_changed_attributes(new_changed_attributes, options = {})
+        new_changed_attributes = @attributes.merge(new_changed_attributes) if options[:merge]
+        @changed_attributes = new_changed_attributes
+      end
+>>>>>>> 34ff86d707a2ce4c5fd29516cb36bb4a5a85533e
     end
   
     # USAGE validates :attribute, :citier_uniqueness => true
