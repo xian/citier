@@ -28,3 +28,9 @@ require 'citier/acts_as_citier'
 
 # Methods that override ActiveRecord::Relation
 require 'citier/relation_methods'
+
+require 'citier/schema_statements'
+
+ActiveRecord::ConnectionAdapters::AbstractAdapter.class_eval do
+  include Citier::SchemaStatements
+end

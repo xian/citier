@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
     "lib/citier/instance_methods.rb",
     "lib/citier/child_instance_methods.rb",
     "lib/citier/root_instance_methods.rb",
+    "lib/citier/schema_statements.rb",
     "lib/citier/sql_adapters.rb"]
   s.files = ["Rakefile",
     "lib/citier.rb",
@@ -27,6 +28,7 @@ Gem::Specification.new do |s|
     "lib/citier/instance_methods.rb",
     "lib/citier/child_instance_methods.rb",
     "lib/citier/root_instance_methods.rb",
+    "lib/citier/schema_statements.rb",
     "lib/citier/sql_adapters.rb",
     "Manifest",
     "citier.gemspec"]
